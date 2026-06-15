@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Questionnaire de satisfaction — Dispositif EBEP</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --ink:        #1a1a2e;
+      --ink-soft:   #4a4a6a;
+      --border:     #d4d4e8;
+      --bg:         #f7f7fb;
+      --card:       #ffffff;
+      --accent:     #3d5a99;
+      --accent-lt:  #eef1f9;
+      --success:    #2d7d6f;
+      --success-lt: #e8f5f2;
+      --radius:     10px;
+      --shadow:     0 2px 12px rgba(61,90,153,0.08);
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: 'Inter', sans-serif;
+      font-size: 16px;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    /* ── Header ── */
+    header {
+      background: var(--accent);
+      color: #fff;
+      padding: 2.5rem 1.5rem 2rem;
+      text-align: center;
+    }
+    header .eyebrow {
+      font-size: 0.78rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      opacity: 0.75;
+      margin-bottom: 0.5rem;
+    }
+    header h1 {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(1.6rem, 4vw, 2.2rem);
+      font-weight: 400;
+      line-height: 1.2;
+      margin-bottom: 0.75rem;
+    }
+    header p {
+      font-size: 0.9rem;
+      opacity: 0.85;
+      max-width: 540px;
+      margin: 0 auto;
+    }
+
+    /* ── Layout ── */
+    main {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 2rem 1rem 4rem;
+    }
+
+    /* ── Section card ── */
+    .section-card {
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      margin-bottom: 1.75rem;
+      overflow: hidden;
+    }
+    .section-header {
+      background: var(--accent-lt);
+      border-left: 4px solid var(--accent);
+      padding: 0.85rem 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .section-number {
+      background: var(--accent);
+      color: #fff;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.78rem;
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+    .section-title {
+      font-weight: 600;
+      font-size: 0.95rem;
+      color: var(--accent);
+    }
+    .section-body {
+      padding: 1.5rem 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.75rem;
+    }
+
+    /* ── Question ── */
+    .question { display: flex; flex-direction: column; gap: 0.6rem; }
+    .question-label {
+      font-weight: 500;
+      font-size: 0.95rem;
+      color: var(--ink);
+    }
+    .question-hint {
+      font-size: 0.8rem;
+      color: var(--ink-soft);
+      font-style: italic;
+    }
+
+    /* ── Checkboxes / Radios ── */
+    .options { display: flex; flex-direction: column; gap: 0.5rem; }
+    .option-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.6rem;
+      padding: 0.6rem 0.85rem;
+      border: 1.5px solid var(--border);
+      border-radius: 7px;
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.15s;
+      user-select: none;
+    }
+    .option-item:hover { border-color: var(--accent); background: var(--accent-lt); }
+    .option-item input[type="checkbox"],
+    .option-item input[type="radio"] {
+      margin-top: 2px;
+      width: 18px;
+      height: 18px;
+      accent-color: var(--accent);
+      flex-shrink: 0;
+      cursor: pointer;
+    }
+    .option-item span { font-size: 0.9rem; line-height: 1.4; }
+    .option-item:has(input:checked) {
+      border-color: var(--accent);
+      background: var(--accent-lt);
+    }
+
+    /* ── Échelle de Likert ── */
+    .scale-wrap { display: flex; flex-direction: column; gap: 0.5rem; }
+    .scale-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.75rem;
+      color: var(--ink-soft);
+      padding: 0 0.25rem;
+    }
+    .scale-buttons {
+      display: flex;
+      gap: 0.5rem;
+    }
+    .scale-buttons label {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.3rem;
+      cursor: pointer;
+    }
+    .scale-buttons input[type="radio"] { display: none; }
+    .scale-btn {
+      width: 100%;
+      aspect-ratio: 1;
+      border-radius: 8px;
+      border: 2px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 1rem;
+      transition: all 0.15s;
+      background: #fff;
+      color: var(--ink-soft);
+    }
+    .scale-buttons label:hover .scale-btn {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: var(--accent-lt);
+    }
+    .scale-buttons input:checked + .scale-btn {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+    .scale-btn-label {
+      font-size: 0.7rem;
+      color: var(--ink-soft);
+      text-align: center;
+    }
+
+    /* ── Classement ── */
+    .rank-list { display: flex; flex-direction: column; gap: 0.5rem; }
+    .rank-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.65rem 0.85rem;
+      border: 1.5px solid var(--border);
+      border-radius: 7px;
+      background: #fff;
+    }
+    .rank-badge {
+      background: var(--accent);
+      color: #fff;
+      border-radius: 5px;
+      width: 26px;
+      height: 26px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+    .rank-select {
+      margin-left: auto;
+      padding: 0.3rem 0.5rem;
+      border: 1.5px solid var(--border);
+      border-radius: 5px;
+      font-size: 0.85rem;
+      color: var(--ink);
+      accent-color: var(--accent);
+      cursor: pointer;
+      min-width: 60px;
+    }
+    .rank-select:focus { border-color: var(--accent); outline: none; }
+    .rank-item span { font-size: 0.88rem; line-height: 1.4; flex: 1; }
+
+    /* ── Textarea ── */
+    textarea {
+      width: 100%;
+      border: 1.5px solid var(--border);
+      border-radius: 7px;
+      padding: 0.75rem;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.9rem;
+      color: var(--ink);
+      resize: vertical;
+      min-height: 100px;
+      transition: border-color 0.15s;
+      background: #fff;
+    }
+    textarea:focus { border-color: var(--accent); outline: none; }
+
+    /* ── Submit ── */
+    .submit-wrap { text-align: center; margin-top: 2rem; }
+    button[type="submit"] {
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 0.9rem 2.5rem;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+      font-family: 'Inter', sans-serif;
+    }
+    button[type="submit"]:hover { background: #2d4a88; }
+    button[type="submit"]:active { transform: scale(0.98); }
+    button[type="submit"]:disabled { background: #aaa; cursor: not-allowed; }
+
+    /* ── Messages ── */
+    #status-msg {
+      margin-top: 1rem;
+      padding: 0.85rem 1rem;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      display: none;
+      text-align: left;
+    }
+    #status-msg.success {
+      background: var(--success-lt);
+      color: var(--success);
+      border: 1.5px solid var(--success);
+      display: block;
+    }
+    #status-msg.error {
+      background: #fdecea;
+      color: #c0392b;
+      border: 1.5px solid #c0392b;
+      display: block;
+    }
+
+    /* ── Config banner ── */
+    #config-banner {
+      background: #fff8e1;
+      border: 1.5px solid #f6c90e;
+      border-radius: 8px;
+      padding: 0.85rem 1rem;
+      font-size: 0.85rem;
+      color: #7a5c00;
+      margin-bottom: 1.5rem;
+      display: flex;
+      gap: 0.5rem;
+      align-items: flex-start;
+    }
+    #config-banner strong { display: block; margin-bottom: 0.2rem; }
+    #config-banner code {
+      background: rgba(0,0,0,0.07);
+      padding: 0.1rem 0.35rem;
+      border-radius: 4px;
+      font-size: 0.82rem;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 480px) {
+      header { padding: 2rem 1rem 1.5rem; }
+      .section-body { padding: 1.25rem 1rem; }
+      .scale-btn { font-size: 0.9rem; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <p class="eyebrow">Collège — Bilan annuel</p>
+  <h1>Questionnaire de satisfaction<br>Dispositif EBEP</h1>
+  <p>Ce questionnaire est anonyme. Vos réponses permettront d'améliorer la prise en charge des élèves à besoins éducatifs particuliers.</p>
+</header>
+
+<main>
+  <form id="ebep-form" novalidate>
+
+    <!-- ══ Section 1 ══ -->
+    <div class="section-card">
+      <div class="section-header">
+        <div class="section-number">1</div>
+        <div class="section-title">Profil et Organisation</div>
+      </div>
+      <div class="section-body">
+
+        <div class="question">
+          <div class="question-label">Dans quels niveaux de classe êtes-vous intervenu cette année ?</div>
+          <div class="question-hint">Plusieurs choix possibles</div>
+          <div class="options">
+            <label class="option-item"><input type="checkbox" name="niveaux" value="6ème" /><span>6ème</span></label>
+            <label class="option-item"><input type="checkbox" name="niveaux" value="5ème" /><span>5ème</span></label>
+            <label class="option-item"><input type="checkbox" name="niveaux" value="4ème" /><span>4ème</span></label>
+            <label class="option-item"><input type="checkbox" name="niveaux" value="3ème" /><span>3ème</span></label>
+          </div>
+        </div>
+
+        <div class="question">
+          <div class="question-label">Le créneau horaire de vos sessions a-t-il permis un travail efficace ?</div>
+          <div class="options">
+            <label class="option-item"><input type="radio" name="creneau" value="Oui, tout à fait" /><span>Oui, tout à fait</span></label>
+            <label class="option-item"><input type="radio" name="creneau" value="Oui, moyennement" /><span>Oui, moyennement</span></label>
+            <label class="option-item"><input type="radio" name="creneau" value="Non, la fatigue des élèves était trop impactante" /><span>Non, la fatigue des élèves était trop impactante</span></label>
+          </div>
+        </div>
+
+        <div class="question">
+          <div class="question-label">Comment évaluez-vous la taille et la composition de votre groupe ?</div>
+          <div class="options">
+            <label class="option-item"><input type="radio" name="composition_groupe" value="Adaptée" /><span>Adaptée</span></label>
+            <label class="option-item"><input type="radio" name="composition_groupe" value="Trop hétérogène (multi-classes complexes)" /><span>Trop hétérogène (multi-classes complexes)</span></label>
+            <label class="option-item"><input type="radio" name="composition_groupe" value="Effectif trop important" /><span>Effectif trop important</span></label>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ══ Section 2 ══ -->
+    <div class="section-card">
+      <div class="section-header">
+        <div class="section-number">2</div>
+        <div class="section-title">Posture et Engagement des Élèves</div>
+      </div>
+      <div class="section-body">
+
+        <div class="question">
+          <div class="question-label">Selon vous, comment les élèves ont-ils majoritairement perçu ce dispositif ?</div>
+          <div class="options">
+            <label class="option-item"><input type="radio" name="perception_eleves" value="Comme un lieu de remédiation et d'apprentissage de méthodes" /><span>Comme un lieu de remédiation et d'apprentissage de méthodes</span></label>
+            <label class="option-item"><input type="radio" name="perception_eleves" value="Comme un simple temps d'accompagnement aux devoirs" /><span>Comme un simple temps d'« Accompagnement aux devoirs » / « Devoirs faits »</span></label>
+          </div>
+        </div>
+
+        <div class="question">
+          <div class="question-label">À quel degré avez-vous fait face à un refus ou une réticence des élèves face aux nouvelles méthodes proposées ?</div>
+          <div class="question-hint">Ex : flashcards, fiches mémento — de 1 (pas du tout réticents) à 5 (très réfractaires)</div>
+          <div class="scale-wrap">
+            <div class="scale-labels">
+              <span>Pas du tout réticents</span>
+              <span>Très réfractaires</span>
+            </div>
+            <div class="scale-buttons">
+              <label>
+                <input type="radio" name="reticence" value="1" />
+                <div class="scale-btn">1</div>
+              </label>
+              <label>
+                <input type="radio" name="reticence" value="2" />
+                <div class="scale-btn">2</div>
+              </label>
+              <label>
+                <input type="radio" name="reticence" value="3" />
+                <div class="scale-btn">3</div>
+              </label>
+              <label>
+                <input type="radio" name="reticence" value="4" />
+                <div class="scale-btn">4</div>
+              </label>
+              <label>
+                <input type="radio" name="reticence" value="5" />
+                <div class="scale-btn">5</div>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="question">
+          <div class="question-label">Les élèves venaient-ils généralement avec le matériel nécessaire pour travailler de manière autonome ?</div>
+          <div class="options">
+            <label class="option-item"><input type="radio" name="materiel" value="Oui, toujours" /><span>Oui, toujours</span></label>
+            <label class="option-item"><input type="radio" name="materiel" value="Souvent" /><span>Souvent</span></label>
+            <label class="option-item"><input type="radio" name="materiel" value="Rarement (difficultés à anticiper les devoirs donnés à la semaine)" /><span>Rarement (difficultés à anticiper les devoirs donnés à la semaine)</span></label>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ══ Section 3 ══ -->
+    <div class="section-card">
+      <div class="section-header">
+        <div class="section-number">3</div>
+        <div class="section-title">Les Réussites Observées</div>
+      </div>
+      <div class="section-body">
+
+        <div class="question">
+          <div class="question-label">Sur quels aspects avez-vous constaté les progrès les plus marquants chez les élèves assidus ?</div>
+          <div class="question-hint">Plusieurs choix possibles</div>
+          <div class="options">
+            <label class="option-item"><input type="checkbox" name="reussites" value="Confiance en soi et valorisation" /><span>Confiance en soi et valorisation (oser verbaliser ses difficultés)</span></label>
+            <label class="option-item"><input type="checkbox" name="reussites" value="Mise au travail plus rapide et spontanée" /><span>Mise au travail plus rapide et spontanée</span></label>
+            <label class="option-item"><input type="checkbox" name="reussites" value="Autonomie et meilleure planification des évaluations" /><span>Autonomie et meilleure planification des évaluations</span></label>
+            <label class="option-item"><input type="checkbox" name="reussites" value="Entraide et collaboration positive au sein du petit groupe" /><span>Entraide et collaboration positive au sein du petit groupe</span></label>
+            <label class="option-item"><input type="checkbox" name="reussites" value="Techniques de mémorisation" /><span>Techniques de mémorisation (prise de conscience du fonctionnement du cerveau)</span></label>
+          </div>
+        </div>
+
+        <div class="question">
+          <div class="question-label">Pouvez-vous illustrer par un exemple concret une réussite marquante observée chez un ou plusieurs élèves cette année ?</div>
+          <textarea name="exemple_reussite" placeholder="Décrivez librement…" rows="4"></textarea>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ══ Section 4 ══ -->
+    <div class="section-card">
+      <div class="section-header">
+        <div class="section-number">4</div>
+        <div class="section-title">Les Manques et Difficultés du Dispositif</div>
+      </div>
+      <div class="section-body">
+
+        <div class="question">
+          <div class="question-label">Avez-vous éprouvé un sentiment d'isolement dans la prise en charge du dispositif ?</div>
+          <div class="options">
+            <label class="option-item"><input type="radio" name="isolement" value="Oui, particulièrement en début d'année" /><span>Oui, particulièrement en début d'année</span></label>
+            <label class="option-item"><input type="radio" name="isolement" value="Parfois, le manque d'échanges entre collègues s'est fait sentir" /><span>Parfois, le manque d'échanges entre collègues s'est fait sentir</span></label>
+            <label class="option-item"><input type="radio" name="isolement" value="Non, je me suis senti(e) soutenu(e) et intégré(e)" /><span>Non, je me suis senti(e) soutenu(e) et intégré(e)</span></label>
+          </div>
+        </div>
+
+        <div class="question">
+          <div class="question-label">Quels ont été les principaux freins à l'efficacité de vos séances ?</div>
+          <div class="question-hint">Plusieurs choix possibles</div>
+          <div class="options">
+            <label class="option-item"><input type="checkbox" name="freins" value="La fatigue des élèves liée aux horaires" /><span>La fatigue des élèves liée aux horaires</span></label>
+            <label class="option-item"><input type="checkbox" name="freins" value="Le manque de concertation ou d'harmonisation entre les enseignants du dispositif" /><span>Le manque de concertation ou d'harmonisation entre les enseignants du dispositif</span></label>
+            <label class="option-item"><input type="checkbox" name="freins" value="La recherche de l'immédiateté par les élèves" /><span>La recherche de l'immédiateté par les élèves (vouloir la réponse vite sans approfondir)</span></label>
+            <label class="option-item"><input type="checkbox" name="freins" value="Le comportement perturbateur de certains élèves non volontaires" /><span>Le comportement perturbateur de certains élèves non volontaires</span></label>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ══ Section 5 ══ -->
+    <div class="section-card">
+      <div class="section-header">
+        <div class="section-number">5</div>
+        <div class="section-title">Évolution et Pistes d'Amélioration</div>
+      </div>
+      <div class="section-body">
+
+        <div class="question">
+          <div class="question-label">Quels leviers vous semblent prioritaires pour améliorer le dispositif l'année prochaine ?</div>
+          <div class="question-hint">Attribuez un rang de 1 (priorité absolue) à 4 (moins urgent) à chaque levier — chaque rang ne peut être utilisé qu'une seule fois.</div>
+          <div class="rank-list" id="rank-list">
+            <div class="rank-item">
+              <div class="rank-badge">A</div>
+              <span>Mettre en place des temps de concertation réguliers entre enseignants pour harmoniser les pratiques.</span>
+              <select class="rank-select" name="rang_concertation" aria-label="Rang concertation">
+                <option value="">—</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+              </select>
+            </div>
+            <div class="rank-item">
+              <div class="rank-badge">B</div>
+              <span>Repenser l'organisation horaire (éviter les fins de journée comme la H8).</span>
+              <select class="rank-select" name="rang_horaires" aria-label="Rang horaires">
+                <option value="">—</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+              </select>
+            </div>
+            <div class="rank-item">
+              <div class="rank-badge">C</div>
+              <span>Réduire ou mieux équilibrer les effectifs des groupes.</span>
+              <select class="rank-select" name="rang_effectifs" aria-label="Rang effectifs">
+                <option value="">—</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+              </select>
+            </div>
+            <div class="rank-item">
+              <div class="rank-badge">D</div>
+              <span>Travailler en amont sur l'adhésion des élèves aux outils méthodologiques (mémorisation, attention).</span>
+              <select class="rank-select" name="rang_adhesion" aria-label="Rang adhésion">
+                <option value="">—</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="question">
+          <div class="question-label">Avez-vous des suggestions pour que les élèves s'approprient plus volontiers les méthodes d'apprentissage ?</div>
+          <textarea name="suggestions_methodes" placeholder="Outils, modalités d'organisation…" rows="4"></textarea>
+        </div>
+
+        <div class="question">
+          <div class="question-label">Dans un monde idéal, quelles mesures concrètes permettraient d'atteindre une entière satisfaction vis-à-vis du dispositif EBEP ?</div>
+          <textarea name="suggestions_ideal" placeholder="Aménagement des espaces, ressources, critères d'inclusion des élèves, flexibilité…" rows="5"></textarea>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ══ Section 6 ══ -->
+    <div class="section-card">
+      <div class="section-header">
+        <div class="section-number">6</div>
+        <div class="section-title">Bilan Global</div>
+      </div>
+      <div class="section-body">
+
+        <div class="question">
+          <div class="question-label">Sur une échelle de 1 à 5, comment évaluez-vous l'efficience globale du dispositif EBEP cette année ?</div>
+          <div class="question-hint">1 = Très insatisfaisant — 5 = Très efficient</div>
+          <div class="scale-wrap">
+            <div class="scale-labels">
+              <span>Très insatisfaisant</span>
+              <span>Très efficient</span>
+            </div>
+            <div class="scale-buttons">
+              <label>
+                <input type="radio" name="bilan_global" value="1" />
+                <div class="scale-btn">1</div>
+              </label>
+              <label>
+                <input type="radio" name="bilan_global" value="2" />
+                <div class="scale-btn">2</div>
+              </label>
+              <label>
+                <input type="radio" name="bilan_global" value="3" />
+                <div class="scale-btn">3</div>
+              </label>
+              <label>
+                <input type="radio" name="bilan_global" value="4" />
+                <div class="scale-btn">4</div>
+              </label>
+              <label>
+                <input type="radio" name="bilan_global" value="5" />
+                <div class="scale-btn">5</div>
+              </label>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ══ Submit ══ -->
+    <div class="submit-wrap">
+      <button type="submit" id="submit-btn">Envoyer mes réponses</button>
+      <div id="status-msg"></div>
+    </div>
+
+  </form>
+</main>
+
+<script>
+  // ══════════════════════════════════════════════════
+  // 👉 REMPLACEZ CETTE URL PAR CELLE DE VOTRE SCRIPT
+  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyd4CjQ5ZtlusT0mYYqrEsIch8SWsKnGc1JMFYRr4R3P1t82ZVjFELLXH7LKt76kyue/exec";
+  // ══════════════════════════════════════════════════
+
+  const form = document.getElementById("ebep-form");
+  const btn  = document.getElementById("submit-btn");
+  const msg  = document.getElementById("status-msg");
+
+  // Validation des rangs (pas de doublons)
+  function getRangs() {
+    const selects = document.querySelectorAll(".rank-select");
+    const vals = Array.from(selects).map(s => s.value).filter(v => v !== "");
+    const unique = new Set(vals);
+    return { vals, unique, selects };
+  }
+
+  // Collecte toutes les réponses
+  function collectData() {
+    const data = {};
+    const fd = new FormData(form);
+
+    // Champs simples (radio, textarea)
+    const singles = ["creneau","composition_groupe","perception_eleves","reticence",
+                     "materiel","isolement","bilan_global","exemple_reussite",
+                     "suggestions_methodes","suggestions_ideal",
+                     "rang_concertation","rang_horaires","rang_effectifs","rang_adhesion"];
+    singles.forEach(k => { data[k] = fd.get(k) || ""; });
+
+    // Champs multi (checkbox)
+    data["niveaux"]   = fd.getAll("niveaux").join(", ") || "";
+    data["reussites"] = fd.getAll("reussites").join(", ") || "";
+    data["freins"]    = fd.getAll("freins").join(", ") || "";
+
+    // Horodatage
+    data["date_envoi"] = new Date().toLocaleString("fr-FR");
+
+    return data;
+  }
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    // Vérification URL configurée
+    if (SCRIPT_URL === "VOTRE_URL_ICI") {
+      msg.className = "error";
+      msg.textContent = "⚠️ Le formulaire n'est pas encore configuré. Ajoutez l'URL de votre Google Apps Script dans le code.";
+      return;
+    }
+
+    // Vérification rangs uniques
+    const { vals, unique, selects } = getRangs();
+    if (vals.length > 0 && vals.length !== unique.size) {
+      msg.className = "error";
+      msg.textContent = "⚠️ Chaque rang (1 à 4) ne peut être attribué qu'une seule fois dans la question de classement.";
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = "Envoi en cours…";
+    msg.className = "";
+    msg.style.display = "none";
+
+    try {
+      const data = collectData();
+      await fetch(SCRIPT_URL, {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+      });
+
+      msg.className = "success";
+      msg.textContent = "✅ Vos réponses ont bien été envoyées. Merci pour votre participation !";
+      form.reset();
+      btn.textContent = "Réponses envoyées";
+
+    } catch (err) {
+      msg.className = "error";
+      msg.textContent = "❌ Une erreur est survenue lors de l'envoi. Vérifiez votre connexion et réessayez.";
+      btn.disabled = false;
+      btn.textContent = "Envoyer mes réponses";
+    }
+  });
+</script>
+
+</body>
+</html>
